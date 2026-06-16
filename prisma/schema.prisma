@@ -1,0 +1,390 @@
+// ResumeForge AI - Prisma schema
+// Run: pnpm prisma migrate dev
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum AuthProvider {
+  CREDENTIALS
+  GOOGLE
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  INCOMPLETE
+}
+
+enum BillingInterval {
+  MONTH
+  YEAR
+}
+
+enum ResumeFileType {
+  PDF
+  DOCX
+  TXT
+}
+
+enum ProcessingStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum AiProvider {
+  OPENAI
+  ANTHROPIC
+}
+
+enum CoverLetterTone {
+  PROFESSIONAL
+  ENTHUSIASTIC
+  CONCISE
+  FORMAL
+  CONVERSATIONAL
+}
+
+enum AuditAction {
+  LOGIN
+  LOGOUT
+  REGISTER
+  PASSWORD_RESET
+  FILE_UPLOAD
+  RESUME_ANALYZE
+  SUBSCRIPTION_CHANGE
+  ADMIN_ACTION
+}
+
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  emailVerified     DateTime?
+  passwordHash      String?
+  name              String?
+  avatarUrl         String?
+  role              Role      @default(USER)
+  provider          AuthProvider @default(CREDENTIALS)
+  twoFactorEnabled  Boolean   @default(false)
+  twoFactorSecret   String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  accounts              Account[]
+  sessions              Session[]
+  passwordResetTokens   PasswordResetToken[]
+  verificationTokens    VerificationToken[]
+  files                 File[]
+  resumes               Resume[]
+  jobDescriptions       JobDescription[]
+  coverLetters          CoverLetter[]
+  linkedInOptimizations LinkedInOptimization[]
+  interviewPreps        InterviewPrep[]
+  subscription          Subscription?
+  usageRecords          UsageRecord[]
+  aiUsageLogs           AiUsageLog[]
+  auditLogs             AuditLog[]
+
+  @@index([role])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  provider          String
+  providerAccountId String
+  accessToken       String?
+  refreshToken      String?
+  expiresAt         Int?
+  createdAt         DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  userId       String
+  refreshHash  String   @unique
+  userAgent    String?
+  ip           String?
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model File {
+  id          String         @id @default(cuid())
+  userId      String
+  key         String         @unique
+  bucket      String
+  fileName    String
+  fileType    ResumeFileType
+  sizeBytes   Int
+  createdAt   DateTime       @default(now())
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resumes Resume[]
+
+  @@index([userId])
+}
+
+model Resume {
+  id            String   @id @default(cuid())
+  userId        String
+  fileId        String?
+  title         String
+  rawText       String   @db.Text
+  parsedJson    Json?
+  isPrimary     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  file      File?            @relation(fields: [fileId], references: [id])
+  versions  ResumeVersion[]
+  analyses  ResumeAnalysis[]
+  jobMatches JobMatch[]
+  coverLetters CoverLetter[]
+
+  @@index([userId])
+}
+
+model ResumeVersion {
+  id         String   @id @default(cuid())
+  resumeId   String
+  version    Int
+  content    Json
+  label      String?
+  createdAt  DateTime @default(now())
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@unique([resumeId, version])
+  @@index([resumeId])
+}
+
+model ResumeAnalysis {
+  id               String           @id @default(cuid())
+  resumeId         String
+  status           ProcessingStatus @default(PENDING)
+  overallScore     Int?
+  atsScore         Int?
+  formattingScore  Int?
+  readabilityScore Int?
+  keywordScore     Int?
+  sectionScores    Json?
+  recommendations  Json?
+  missingSkills    Json?
+  provider         AiProvider?
+  error            String?
+  createdAt        DateTime         @default(now())
+  completedAt      DateTime?
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId])
+  @@index([status])
+}
+
+model JobDescription {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  company     String?
+  rawText     String   @db.Text
+  keywords    Json?
+  createdAt   DateTime @default(now())
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobMatches JobMatch[]
+  coverLetters CoverLetter[]
+
+  @@index([userId])
+}
+
+model JobMatch {
+  id               String           @id @default(cuid())
+  resumeId         String
+  jobDescriptionId String
+  status           ProcessingStatus @default(PENDING)
+  matchScore       Int?
+  missingKeywords  Json?
+  missingSkills    Json?
+  suggestedEdits   Json?
+  createdAt        DateTime         @default(now())
+
+  resume         Resume         @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  jobDescription JobDescription @relation(fields: [jobDescriptionId], references: [id], onDelete: Cascade)
+
+  @@unique([resumeId, jobDescriptionId])
+  @@index([resumeId])
+  @@index([jobDescriptionId])
+}
+
+model CoverLetter {
+  id               String          @id @default(cuid())
+  userId           String
+  resumeId         String?
+  jobDescriptionId String?
+  tone             CoverLetterTone @default(PROFESSIONAL)
+  content          String          @db.Text
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resume         Resume?         @relation(fields: [resumeId], references: [id])
+  jobDescription JobDescription? @relation(fields: [jobDescriptionId], references: [id])
+
+  @@index([userId])
+}
+
+model LinkedInOptimization {
+  id           String   @id @default(cuid())
+  userId       String
+  headline     String?
+  about        String?  @db.Text
+  suggestions  Json?
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model InterviewPrep {
+  id               String   @id @default(cuid())
+  userId           String
+  jobDescriptionId String?
+  behavioral       Json?
+  technical        Json?
+  followUps        Json?
+  createdAt        DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Plan {
+  id              String          @id @default(cuid())
+  key             String          @unique
+  name            String
+  stripePriceId   String?         @unique
+  interval        BillingInterval @default(MONTH)
+  priceCents      Int             @default(0)
+  monthlyAnalyses Int             @default(5)
+  monthlyAiCalls  Int             @default(50)
+  features        Json?
+  active          Boolean         @default(true)
+
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  userId               String             @unique
+  planId               String
+  stripeCustomerId     String?            @unique
+  stripeSubscriptionId String?            @unique
+  status               SubscriptionStatus @default(TRIALING)
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean            @default(false)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan Plan @relation(fields: [planId], references: [id])
+
+  @@index([planId])
+}
+
+model UsageRecord {
+  id        String   @id @default(cuid())
+  userId    String
+  metric    String
+  amount    Int      @default(1)
+  period    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, metric, period])
+}
+
+model AiUsageLog {
+  id            String     @id @default(cuid())
+  userId        String
+  provider      AiProvider
+  model         String
+  operation     String
+  promptTokens  Int        @default(0)
+  completionTokens Int     @default(0)
+  costCents     Int        @default(0)
+  createdAt     DateTime   @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([provider])
+}
+
+model AuditLog {
+  id        String      @id @default(cuid())
+  userId    String?
+  action    AuditAction
+  ip        String?
+  userAgent String?
+  metadata  Json?
+  createdAt DateTime    @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+}
