@@ -1,56 +1,46 @@
 import Link from "next/link";
-
-const FEATURES = [
-  { title: "ATS Resume Analyzer", desc: "Section-by-section scoring with actionable fixes." },
-  { title: "Job Match Engine", desc: "See your fit %, missing keywords and suggested edits." },
-  { title: "Cover Letters", desc: "Tailored, tone-controlled letters in seconds." },
-  { title: "LinkedIn Optimizer", desc: "Stronger headline and About section." },
-  { title: "Interview Prep", desc: "Behavioral and technical questions with model answers." },
-  { title: "Version Tracking", desc: "Keep every iteration of every resume." },
-];
+import { Hero } from "@/components/landing/hero";
+import { Features, Showcase, Steps, CallToAction } from "@/components/landing/sections";
 
 export default function HomePage() {
   return (
-    <main className="flex min-h-screen flex-col">
-      <header className="flex items-center justify-between px-6 py-5 md:px-12">
-        <span className="text-lg font-bold">ResumeForge AI</span>
-        <nav className="flex items-center gap-4 text-sm">
-          <Link href="/login" className="text-muted-foreground hover:text-foreground">
-            Sign in
-          </Link>
+    <div className="relative">
+      <header className="fixed inset-x-0 top-0 z-50">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <Link
-            href="/register"
-            className="rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground"
+            href="/"
+            className="rounded-full bg-background/70 px-4 py-2 text-sm font-bold backdrop-blur"
           >
-            Get started
+            ResumeForge AI
           </Link>
-        </nav>
+          <nav className="flex items-center gap-2 rounded-full bg-background/70 px-2 py-1.5 text-sm backdrop-blur">
+            <Link
+              href="/login"
+              className="rounded-full px-4 py-1.5 text-muted-foreground transition hover:text-foreground"
+            >
+              Sign in
+            </Link>
+            <Link
+              href="/register"
+              className="rounded-full bg-primary px-4 py-1.5 font-medium text-primary-foreground transition hover:scale-[1.03]"
+            >
+              Get started
+            </Link>
+          </nav>
+        </div>
       </header>
 
-      <section className="mx-auto flex max-w-3xl flex-1 flex-col items-center justify-center px-6 py-20 text-center">
-        <h1 className="text-4xl font-extrabold tracking-tight md:text-6xl">
-          Land more interviews with an AI-optimized resume
-        </h1>
-        <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-          ResumeForge AI scores your resume against any job, rewrites it for ATS systems, and
-          generates tailored cover letters and interview prep \u2014 in seconds.
-        </p>
-        <Link
-          href="/register"
-          className="mt-10 rounded-lg bg-primary px-8 py-3 text-base font-semibold text-primary-foreground"
-        >
-          Analyze my resume free
-        </Link>
-      </section>
+      <main>
+        <Hero />
+        <Features />
+        <Showcase />
+        <Steps />
+        <CallToAction />
+      </main>
 
-      <section className="mx-auto grid max-w-5xl grid-cols-1 gap-6 px-6 pb-24 md:grid-cols-3">
-        {FEATURES.map((f) => (
-          <div key={f.title} className="rounded-xl border bg-card p-6">
-            <h3 className="font-semibold">{f.title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">{f.desc}</p>
-          </div>
-        ))}
-      </section>
-    </main>
+      <footer className="border-t px-6 py-10 text-center text-sm text-muted-foreground">
+        <p>\u00a9 {new Date().getFullYear()} ResumeForge AI. All rights reserved.</p>
+      </footer>
+    </div>
   );
 }
