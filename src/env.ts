@@ -4,6 +4,18 @@ import { z } from "zod";
  * Centralized, validated environment configuration.
  * Throws at startup if required variables are missing/invalid.
  */
+
+// process.env values are always strings, so z.coerce.boolean() would turn the
+// literal string "false" into `true`. Parse the common truthy spellings instead.
+const booleanFromString = (fallback: boolean) =>
+  z
+    .string()
+    .optional()
+    .transform((v) => {
+      if (v === undefined || v === "") return fallback;
+      return ["1", "true", "yes", "on"].includes(v.toLowerCase());
+    });
+
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   APP_URL: z.string().url().default("http://localhost:3000"),
@@ -43,7 +55,7 @@ const envSchema = z.object({
   S3_ACCESS_KEY_ID: z.string().optional(),
   S3_SECRET_ACCESS_KEY: z.string().optional(),
   S3_BUCKET: z.string().default("resumeforge-uploads"),
-  S3_FORCE_PATH_STYLE: z.coerce.boolean().default(true),
+  S3_FORCE_PATH_STYLE: booleanFromString(true),
 
   RATE_LIMIT_WINDOW_SECONDS: z.coerce.number().int().positive().default(60),
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(100),
