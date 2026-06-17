@@ -49,9 +49,37 @@
   * {
     border-color: hsl(var(--border));
   }
+  html {
+    /* Native fallback when Lenis is disabled (e.g. reduced motion). */
+    scroll-behavior: smooth;
+    /* Offset anchor jumps for the fixed nav. */
+    scroll-padding-top: 6rem;
+  }
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
