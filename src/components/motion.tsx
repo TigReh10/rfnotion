@@ -9,7 +9,9 @@ import {
 } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-const EASE = [0.22, 1, 0.36, 1] as const;
+// Explicit mutable tuple: a readonly (`as const`) tuple is NOT assignable to
+// Framer Motion's cubic-bezier `ease` type and fails the type-check.
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 /** Fade-in + slide-up the moment an element enters the viewport. */
 export function Reveal({
@@ -101,11 +103,11 @@ export function Parallax({
   distance?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const scrollConfig = {
+  // Pass options inline so the offset literals are contextually typed.
+  const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start end", "end start"] as const,
-  };
-  const { scrollYProgress } = useScroll(scrollConfig);
+    offset: ["start end", "end start"],
+  });
   const y = useTransform(scrollYProgress, [0, 1], [distance, -distance]);
   const style = { y };
 
