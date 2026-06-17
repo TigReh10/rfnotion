@@ -13,7 +13,14 @@ export async function extractResumeText(
 ): Promise<string> {
   switch (fileType) {
     case "PDF": {
-      const pdfParse = (await import("pdf-parse")).default;
+      // The pdf-parse package entry runs a debug block that reads a bundled
+      // sample PDF when `module.parent` is falsy (which is the case under
+      // bundlers), throwing ENOENT. Import the library implementation directly.
+      // @ts-ignore - deep import has no bundled type declarations
+      const mod = await import("pdf-parse/lib/pdf-parse.js");
+      const pdfParse = (mod.default ?? mod) as (
+        data: Buffer,
+      ) => Promise<{ text: string }>;
       const data = await pdfParse(buffer);
       return normalize(data.text);
     }
