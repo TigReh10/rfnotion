@@ -3,7 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth/session";
 import { rateLimit } from "@/lib/rate-limit";
-import { enqueueResumeAnalysis } from "@/lib/queue";
+import { runResumeAnalysis } from "@/lib/analysis/run-analysis";
 import { currentPeriodKey } from "@/lib/utils";
 import { toErrorResponse, NotFoundError, QuotaExceededError } from "@/lib/errors";
 
@@ -47,12 +47,13 @@ export async function POST(req: NextRequest) {
       data: { userId: user.id, metric: "resume_analysis", period },
     });
 
-    await enqueueResumeAnalysis({ analysisId: analysis.id, resumeId, userId: user.id, targetRole });
+    // Run inline so the product works without a separate worker process.
+    // runResumeAnalysis prefers a configured AI provider and falls back to the
+    // deterministic local engine, so this never depends on external keys.
+    await runResumeAnalysis({ analysisId: analysis.id, resumeId, userId: user.id, targetRole });
 
-    return NextResponse.json(
-      { analysisId: analysis.id, status: analysis.status },
-      { status: 202 },
-    );
+    const completed = await prisma.resumeAnalysis.findUnique({ where: { id: analysis.id } });
+    return NextResponse.json({ analysis: completed }, { status: 200 });
   } catch (err) {
     return toErrorResponse(err);
   }
