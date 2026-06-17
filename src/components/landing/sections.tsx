@@ -21,7 +21,7 @@ const FEATURES = [
 ];
 
 const STEPS = [
-  { n: "01", title: "Upload", desc: "Drop in your resume \u2014 PDF, DOCX or text. We extract it instantly." },
+  { n: "01", title: "Upload", desc: "Drop in your resume — PDF, DOCX or text. We extract it instantly." },
   { n: "02", title: "Analyze", desc: "AI scores it against ATS rules and your target role." },
   { n: "03", title: "Optimize", desc: "Apply suggestions, export, and track every version." },
 ];
@@ -72,7 +72,7 @@ export function Showcase() {
           </h2>
           <p className="mt-5 text-lg text-muted-foreground">
             Every suggestion is tied to a measurable ATS improvement. Apply a fix,
-            see the score move \u2014 no guesswork.
+            see the score move — no guesswork.
           </p>
           <div className="mt-8 grid grid-cols-3 gap-6">
             <Stat value="92%" label="Avg. ATS score" />
