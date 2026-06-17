@@ -11,8 +11,11 @@ import { motion, useScroll, useTransform } from "framer-motion";
  */
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
-  const scrollConfig = { target: ref, offset: ["start start", "end start"] as const };
-  const { scrollYProgress } = useScroll(scrollConfig);
+  // Options passed inline so the offset string literals are contextually typed.
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
 
   const copyOpacity = useTransform(scrollYProgress, [0, 0.45], [1, 0]);
   const copyY = useTransform(scrollYProgress, [0, 0.45], [0, -80]);
@@ -36,7 +39,7 @@ export function Hero() {
 
         <motion.div style={copyStyle} className="z-10 max-w-3xl px-6 text-center">
           <span className="inline-flex items-center rounded-full border bg-card/60 px-4 py-1.5 text-xs font-medium backdrop-blur">
-            AI resume optimization \u00b7 ATS-ready in seconds
+            AI resume optimization · ATS-ready in seconds
           </span>
           <h1 className="mt-6 text-balance text-5xl font-extrabold tracking-tight md:text-7xl">
             Land more interviews
