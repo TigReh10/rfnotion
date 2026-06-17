@@ -80,7 +80,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-                placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
+                placeholder="Your password"
               />
             </div>
             {requires2fa && (
@@ -100,7 +100,7 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-60"
             >
-              {loading ? "Signing in\u2026" : "Sign in"}
+              {loading ? "Signing in..." : "Sign in"}
             </button>
           </form>
 
