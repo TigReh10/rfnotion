@@ -39,7 +39,7 @@ export default function HomePage() {
       </main>
 
       <footer className="border-t px-6 py-10 text-center text-sm text-muted-foreground">
-        <p>\u00a9 {new Date().getFullYear()} ResumeForge AI. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} ResumeForge AI. All rights reserved.</p>
       </footer>
     </div>
   );
