@@ -15,6 +15,12 @@ export default function HomePage() {
           </Link>
           <nav className="flex items-center gap-2 rounded-full bg-background/70 px-2 py-1.5 text-sm backdrop-blur">
             <Link
+              href="/pricing"
+              className="rounded-full px-4 py-1.5 text-muted-foreground transition hover:text-foreground"
+            >
+              Pricing
+            </Link>
+            <Link
               href="/login"
               className="rounded-full px-4 py-1.5 text-muted-foreground transition hover:text-foreground"
             >
