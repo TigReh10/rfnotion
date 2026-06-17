@@ -25,13 +25,18 @@ export function Reveal({
   y?: number;
   once?: boolean;
 }) {
+  const initial = { opacity: 0, y };
+  const inView = { opacity: 1, y: 0 };
+  const viewport = { once, margin: "-80px" };
+  const transition = { duration: 0.7, ease: EASE, delay };
+
   return (
     <motion.div
       className={className}
-      initial= opacity: 0, y 
-      whileInView= opacity: 1, y: 0 
-      viewport= once, margin: "-10% 0px -10% 0px" 
-      transition= duration: 0.7, ease: EASE, delay 
+      initial={initial}
+      whileInView={inView}
+      viewport={viewport}
+      transition={transition}
     >
       {children}
     </motion.div>
@@ -48,6 +53,8 @@ const itemVariants: Variants = {
   show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: EASE } },
 };
 
+const staggerViewport = { once: true, margin: "-60px" };
+
 /** Parent that staggers the reveal of its <StaggerItem> children. */
 export function StaggerGroup({
   children,
@@ -62,7 +69,7 @@ export function StaggerGroup({
       variants={containerVariants}
       initial="hidden"
       whileInView="show"
-      viewport= once: true, margin: "-10% 0px" 
+      viewport={staggerViewport}
     >
       {children}
     </motion.div>
@@ -94,15 +101,17 @@ export function Parallax({
   distance?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
+  const scrollConfig = {
     target: ref,
-    offset: ["start end", "end start"],
-  });
+    offset: ["start end", "end start"] as const,
+  };
+  const { scrollYProgress } = useScroll(scrollConfig);
   const y = useTransform(scrollYProgress, [0, 1], [distance, -distance]);
+  const style = { y };
 
   return (
     <div ref={ref} className={cn("relative overflow-hidden", className)}>
-      <motion.div style= y  className="will-change-transform">
+      <motion.div style={style} className="will-change-transform">
         {children}
       </motion.div>
     </div>
