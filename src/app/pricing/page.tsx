@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Check } from "lucide-react";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 
 export const metadata = {
   title: "Pricing",
@@ -74,31 +75,7 @@ const TIERS: Tier[] = [
 export default function PricingPage() {
   return (
     <div className="relative min-h-screen">
-      <header className="fixed inset-x-0 top-0 z-50">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link
-            href="/"
-            className="rounded-full bg-background/70 px-4 py-2 text-sm font-bold backdrop-blur"
-          >
-            ResumeForge AI
-          </Link>
-          <nav className="flex items-center gap-2 rounded-full bg-background/70 px-2 py-1.5 text-sm backdrop-blur">
-            <Link
-              href="/login"
-              className="rounded-full px-4 py-1.5 text-muted-foreground transition hover:text-foreground"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/register"
-              className="rounded-full bg-primary px-4 py-1.5 font-medium text-primary-foreground transition hover:scale-[1.03]"
-            >
-              Get started
-            </Link>
-            <ThemeToggle />
-          </nav>
-        </div>
-      </header>
+      <SiteHeader />
 
       <main className="mx-auto max-w-6xl px-6 pb-28 pt-36">
         <Reveal className="mx-auto max-w-2xl text-center">
@@ -167,6 +144,8 @@ export default function PricingPage() {
           </p>
         </Reveal>
       </main>
+
+      <SiteFooter />
     </div>
   );
 }
