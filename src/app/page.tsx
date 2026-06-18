@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Hero } from "@/components/landing/hero";
 import { Features, Showcase, Steps, CallToAction } from "@/components/landing/sections";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function HomePage() {
   return (
@@ -32,6 +33,7 @@ export default function HomePage() {
             >
               Get started
             </Link>
+            <ThemeToggle />
           </nav>
         </div>
       </header>
