@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Check } from "lucide-react";
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export const metadata = {
   title: "Pricing",
@@ -94,6 +95,7 @@ export default function PricingPage() {
             >
               Get started
             </Link>
+            <ThemeToggle />
           </nav>
         </div>
       </header>
