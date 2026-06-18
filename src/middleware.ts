@@ -3,19 +3,34 @@ import { NextResponse, type NextRequest } from "next/server";
 const PROTECTED_PREFIXES = ["/dashboard", "/admin"];
 const AUTH_COOKIE = process.env.AUTH_COOKIE_NAME ?? "rf_session";
 
+const CSP = [
+  "default-src 'self'",
+  "img-src 'self' data: https:",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+  "style-src 'self' 'unsafe-inline'",
+  "connect-src 'self' https:",
+  "font-src 'self' data:",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+  "upgrade-insecure-requests",
+].join("; ");
+
 function securityHeaders(res: NextResponse): NextResponse {
   res.headers.set("X-Frame-Options", "DENY");
   res.headers.set("X-Content-Type-Options", "nosniff");
   res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   res.headers.set("X-XSS-Protection", "1; mode=block");
   res.headers.set(
-    "Permissions-Policy",
-    "camera=(), microphone=(), geolocation=()",
+    "Strict-Transport-Security",
+    "max-age=63072000; includeSubDomains; preload",
   );
   res.headers.set(
-    "Content-Security-Policy",
-    "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' https:; font-src 'self' data:;",
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=(), interest-cohort=()",
   );
+  res.headers.set("Content-Security-Policy", CSP);
   return res;
 }
 
