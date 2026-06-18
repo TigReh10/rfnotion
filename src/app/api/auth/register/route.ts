@@ -5,11 +5,16 @@ import { hashPassword } from "@/lib/auth/password";
 import { createSession } from "@/lib/auth/session";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
 import { toErrorResponse, AppError } from "@/lib/errors";
+import { isDisposableEmail } from "@/lib/auth/disposable-email";
 
 export const dynamic = "force-dynamic";
 
 const bodySchema = z.object({
-  email: z.string().email(),
+  email: z
+    .string()
+    .email()
+    .max(254)
+    .transform((v) => v.trim().toLowerCase()),
   password: z.string().min(8).max(128),
   name: z.string().min(1).max(120).optional(),
 });
@@ -20,6 +25,15 @@ export async function POST(req: NextRequest) {
     await rateLimit(`register:${ip}`, { max: 10, windowSeconds: 600 });
 
     const { email, password, name } = bodySchema.parse(await req.json());
+
+    if (isDisposableEmail(email)) {
+      throw new AppError(
+        "Please use a permanent email address. Temporary or disposable email providers are not allowed.",
+        422,
+        "DISPOSABLE_EMAIL",
+      );
+    }
+
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) throw new AppError("An account with this email already exists", 409, "EMAIL_TAKEN");
 
