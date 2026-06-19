@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Logo } from "@/components/logo";
 
 const COLUMNS: { title: string; links: [string, string][] }[] = [
   {
@@ -34,7 +35,7 @@ export function SiteFooter() {
       <div className="mx-auto max-w-6xl px-6 py-14">
         <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
           <div className="max-w-xs">
-            <p className="text-sm font-bold">ResumeForge AI</p>
+            <Logo />
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
               AI-powered resume analysis, job matching, and interview prep to help
               you get hired faster.
@@ -61,7 +62,7 @@ export function SiteFooter() {
           </div>
         </div>
         <div className="mt-12 flex flex-col gap-2 border-t pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <p>© {year} ResumeForge AI. All rights reserved.</p>
+          <p>\u00a9 {year} ResumeForge AI. All rights reserved.</p>
           <p>Made for job seekers everywhere.</p>
         </div>
       </div>
