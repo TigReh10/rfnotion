@@ -39,7 +39,7 @@ export default async function DashboardPage() {
   const name = user.email.split("@")[0];
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-10 md:px-8">
+    <main className="mx-auto max-w-5xl px-6 py-10 md:px-8">
       <div>
         <h2 className="text-2xl font-bold tracking-tight">Welcome back, {name}</h2>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -68,6 +68,6 @@ export default async function DashboardPage() {
           );
         })}
       </section>
-    </div>
+    </main>
   );
 }
