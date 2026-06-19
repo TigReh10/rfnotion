@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Logo } from "@/components/logo";
 
 /**
  * Shared marketing header used across public pages (landing, pricing, legal).
@@ -11,9 +12,10 @@ export function SiteHeader() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link
           href="/"
-          className="rounded-full bg-background/70 px-4 py-2 text-sm font-bold backdrop-blur"
+          className="rounded-full bg-background/70 px-4 py-2 backdrop-blur transition hover:bg-background/90"
+          aria-label="ResumeForge AI home"
         >
-          ResumeForge AI
+          <Logo />
         </Link>
         <nav className="flex items-center gap-2 rounded-full bg-background/70 px-2 py-1.5 text-sm backdrop-blur">
           <Link
