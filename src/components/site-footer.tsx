@@ -62,7 +62,7 @@ export function SiteFooter() {
           </div>
         </div>
         <div className="mt-12 flex flex-col gap-2 border-t pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <p>\u00a9 {year} ResumeForge AI. All rights reserved.</p>
+          <p>© {year} ResumeForge AI. All rights reserved.</p>
           <p>Made for job seekers everywhere.</p>
         </div>
       </div>
