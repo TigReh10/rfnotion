@@ -1,5 +1,13 @@
 import { Hero } from "@/components/landing/hero";
-import { Features, Showcase, Steps, CallToAction } from "@/components/landing/sections";
+import {
+  TrustBar,
+  Features,
+  Showcase,
+  Steps,
+  Testimonials,
+  Faq,
+  CallToAction,
+} from "@/components/landing/sections";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
@@ -10,9 +18,12 @@ export default function HomePage() {
 
       <main>
         <Hero />
+        <TrustBar />
         <Features />
         <Showcase />
         <Steps />
+        <Testimonials />
+        <Faq />
         <CallToAction />
       </main>
 
