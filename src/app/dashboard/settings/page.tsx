@@ -26,7 +26,7 @@ export default async function SettingsPage() {
   if (!user) redirect("/login");
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-10 md:px-8">
+    <main className="mx-auto max-w-3xl px-6 py-10 md:px-8">
       <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
       <p className="mt-1 text-sm text-muted-foreground">
         Manage your account, security and subscription.
@@ -38,6 +38,6 @@ export default async function SettingsPage() {
         twoFactorEnabled={user.twoFactorEnabled}
         canChangePassword={user.provider === "CREDENTIALS"}
       />
-    </div>
+    </main>
   );
 }
