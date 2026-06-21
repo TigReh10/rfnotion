@@ -5,6 +5,7 @@ import {
   motion,
   useScroll,
   useTransform,
+  useReducedMotion,
   type Variants,
 } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -27,6 +28,13 @@ export function Reveal({
   y?: number;
   once?: boolean;
 }) {
+  const reduceMotion = useReducedMotion();
+
+  // Reduced motion: render content statically (already visible, no transform).
+  if (reduceMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
   const initial = { opacity: 0, y };
   const inView = { opacity: 1, y: 0 };
   const viewport = { once, margin: "-80px" };
@@ -65,6 +73,11 @@ export function StaggerGroup({
   children: ReactNode;
   className?: string;
 }) {
+  const reduceMotion = useReducedMotion();
+  if (reduceMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div
       className={className}
@@ -85,6 +98,11 @@ export function StaggerItem({
   children: ReactNode;
   className?: string;
 }) {
+  const reduceMotion = useReducedMotion();
+  if (reduceMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div className={className} variants={itemVariants}>
       {children}
@@ -102,18 +120,20 @@ export function Parallax({
   className?: string;
   distance?: number;
 }) {
+  const reduceMotion = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
-  // Pass options inline so the offset literals are contextually typed.
+  // Hooks must run unconditionally; the resulting motion value is simply not
+  // applied when the user prefers reduced motion.
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"],
   });
   const y = useTransform(scrollYProgress, [0, 1], [distance, -distance]);
-  const style = { y };
+  const style = reduceMotion ? undefined : { y };
 
   return (
     <div ref={ref} className={cn("relative overflow-hidden", className)}>
-      <motion.div style={style} className="will-change-transform">
+      <motion.div style={style} className={reduceMotion ? undefined : "will-change-transform"}>
         {children}
       </motion.div>
     </div>
