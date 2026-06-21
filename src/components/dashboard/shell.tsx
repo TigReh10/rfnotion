@@ -8,6 +8,10 @@ import {
   Target,
   PenLine,
   MessagesSquare,
+  Linkedin,
+  GraduationCap,
+  Route,
+  History,
   Settings,
   LogOut,
 } from "lucide-react";
@@ -21,6 +25,10 @@ const NAV = [
   { href: "/dashboard/match", label: "Job Match", icon: Target },
   { href: "/dashboard/cover-letters", label: "Cover Letters", icon: PenLine },
   { href: "/dashboard/interview", label: "Interview Prep", icon: MessagesSquare },
+  { href: "/dashboard/linkedin", label: "LinkedIn", icon: Linkedin },
+  { href: "/dashboard/skills", label: "Skill Gap", icon: GraduationCap },
+  { href: "/dashboard/roadmap", label: "Career Roadmap", icon: Route },
+  { href: "/dashboard/history", label: "History", icon: History },
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
