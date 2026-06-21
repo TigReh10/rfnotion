@@ -43,14 +43,17 @@ export async function POST(req: NextRequest) {
     const analysis = await prisma.resumeAnalysis.create({
       data: { resumeId, status: "PENDING" },
     });
-    await prisma.usageRecord.create({
-      data: { userId: user.id, metric: "resume_analysis", period },
-    });
 
     // Run inline so the product works without a separate worker process.
     // runResumeAnalysis prefers a configured AI provider and falls back to the
     // deterministic local engine, so this never depends on external keys.
     await runResumeAnalysis({ analysisId: analysis.id, resumeId, userId: user.id, targetRole });
+
+    // Only count the analysis against the monthly quota once it actually
+    // succeeded, so a failed run never burns a user's credit.
+    await prisma.usageRecord.create({
+      data: { userId: user.id, metric: "resume_analysis", period },
+    });
 
     const completed = await prisma.resumeAnalysis.findUnique({ where: { id: analysis.id } });
     return NextResponse.json({ analysis: completed }, { status: 200 });
