@@ -12,6 +12,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [totp, setTotp] = useState("");
+  const [website, setWebsite] = useState("");
   const [requires2fa, setRequires2fa] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -24,7 +25,7 @@ export default function LoginPage() {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, totp: totp || undefined }),
+        body: JSON.stringify({ email, password, totp: totp || undefined, website }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -61,6 +62,17 @@ export default function LoginPage() {
           )}
 
           <form onSubmit={onSubmit} className="mt-6 space-y-4">
+            {/* Honeypot: hidden from real users, bots tend to fill it */}
+            <input
+              type="text"
+              name="website"
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              className="absolute left-[-9999px] h-0 w-0 opacity-0"
+            />
             <div>
               <label className="mb-1 block text-sm font-medium">Email</label>
               <input
