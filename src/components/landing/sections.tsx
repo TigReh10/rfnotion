@@ -9,7 +9,6 @@ import {
   Linkedin,
   MessagesSquare,
   History,
-  Star,
   ChevronDown,
   ShieldCheck,
   Zap,
@@ -39,24 +38,21 @@ const TRUST = [
   { icon: Sparkles, label: "ATS-tested guidance" },
 ];
 
-const TESTIMONIALS = [
+const BENEFITS = [
   {
-    quote:
-      "I went from zero callbacks to three interviews in two weeks. The ATS fixes were specific, not generic fluff.",
-    name: "Aarav S.",
-    role: "Software Engineer",
+    icon: Target,
+    title: "Tailored to each job",
+    desc: "Match your resume to a specific role and see exactly which keywords and skills are missing.",
   },
   {
-    quote:
-      "The job-match score showed me exactly which keywords I was missing for each role. Game changer for tailoring.",
-    name: "Priya M.",
-    role: "Product Marketing",
+    icon: Zap,
+    title: "Fast, actionable feedback",
+    desc: "Get a clear ATS score and prioritized fixes in seconds, not after a slow paid review.",
   },
   {
-    quote:
-      "Cover letters that used to take me an hour now take a minute — and they actually sound like me.",
-    name: "Daniel R.",
-    role: "Data Analyst",
+    icon: ShieldCheck,
+    title: "Private by default",
+    desc: "Your resume is encrypted, never sold or shared, and you can delete it at any time.",
   },
 ];
 
@@ -88,7 +84,7 @@ export function TrustBar() {
     <section className="border-y bg-muted/20 py-7">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-5 px-6 text-center md:flex-row md:justify-between md:text-left">
         <p className="max-w-xs text-sm font-medium text-muted-foreground">
-          Trusted by job seekers chasing roles at companies big and small
+          Get your resume past automated screeners and in front of real recruiters.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
           {TRUST.map((t) => {
@@ -155,9 +151,9 @@ export function Showcase() {
             see the score move — no guesswork.
           </p>
           <div className="mt-8 grid grid-cols-3 gap-6">
-            <Stat value="92%" label="Avg. ATS score" />
-            <Stat value="3.2x" label="More callbacks" />
-            <Stat value="12s" label="To first analysis" />
+            <Stat value="Free" label="To get started" />
+            <Stat value="3" label="Formats: PDF, DOCX, TXT" />
+            <Stat value="ATS" label="Scored best practices" />
           </div>
         </Reveal>
 
@@ -169,7 +165,7 @@ export function Showcase() {
                 <p className="text-5xl font-extrabold text-primary">92</p>
               </div>
               <span className="rounded-full bg-green-500/15 px-3 py-1 text-xs font-semibold text-green-600">
-                +18 this session
+                Sample preview
               </span>
             </div>
             <div className="mt-6 space-y-4">
@@ -206,38 +202,31 @@ export function Steps() {
   );
 }
 
-export function Testimonials() {
+export function Benefits() {
   return (
     <section className="relative overflow-hidden border-y bg-muted/30 py-28">
       <div className="mx-auto max-w-6xl px-6">
         <Reveal className="mx-auto max-w-2xl text-center">
           <h2 className="text-balance text-4xl font-bold tracking-tight md:text-5xl">
-            Loved by people who got hired
+            Built for one thing: more interviews
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Real outcomes from job seekers who sharpened their applications.
+            Practical, ATS-aware feedback you can act on right away.
           </p>
         </Reveal>
         <StaggerGroup className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3">
-          {TESTIMONIALS.map((t) => (
-            <StaggerItem key={t.name} className="flex flex-col rounded-2xl border bg-card p-7">
-              <div className="flex gap-1 text-primary">
-                {[0, 1, 2, 3, 4].map((i) => (
-                  <Star key={i} className="h-4 w-4 fill-current" />
-                ))}
-              </div>
-              <p className="mt-5 flex-1 text-sm leading-relaxed">{t.quote}</p>
-              <div className="mt-6 flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
-                  {t.name.charAt(0)}
-                </span>
-                <div>
-                  <p className="text-sm font-semibold">{t.name}</p>
-                  <p className="text-xs text-muted-foreground">{t.role}</p>
+          {BENEFITS.map((b) => {
+            const Icon = b.icon;
+            return (
+              <StaggerItem key={b.title} className="rounded-2xl border bg-card p-7">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                  <Icon className="h-6 w-6" />
                 </div>
-              </div>
-            </StaggerItem>
-          ))}
+                <h3 className="mt-5 text-lg font-semibold">{b.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{b.desc}</p>
+              </StaggerItem>
+            );
+          })}
         </StaggerGroup>
       </div>
     </section>
@@ -294,7 +283,8 @@ export function CallToAction() {
           Your next role starts here
         </h2>
         <p className="mt-5 text-lg text-muted-foreground">
-          Join thousands optimizing their resumes with AI. Free to start.
+          Free to start, no credit card required. Upload your resume and get your
+          first ATS score in minutes.
         </p>
         <Link
           href="/register"
