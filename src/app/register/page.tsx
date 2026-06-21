@@ -9,6 +9,8 @@ export default function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  // Honeypot: hidden from real users; only bots tend to fill it.
+  const [website, setWebsite] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -20,7 +22,7 @@ export default function RegisterPage() {
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name || undefined, email, password }),
+        body: JSON.stringify({ name: name || undefined, email, password, website }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -85,6 +87,21 @@ export default function RegisterPage() {
                 placeholder="At least 8 characters"
               />
             </div>
+
+            {/* Honeypot field: visually hidden and skipped by keyboard/AT users. */}
+            <div className="pointer-events-none absolute left-[-9999px] top-[-9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
+              <label htmlFor="website">Leave this field empty</label>
+              <input
+                id="website"
+                name="website"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+              />
+            </div>
+
             <button
               type="submit"
               disabled={loading}
