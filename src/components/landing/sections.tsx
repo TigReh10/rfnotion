@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   Zap,
   Sparkles,
+  Star,
 } from "lucide-react";
 import { Reveal, StaggerGroup, StaggerItem, Parallax } from "@/components/motion";
 import { cn } from "@/lib/utils";
@@ -56,26 +57,27 @@ const BENEFITS = [
   },
 ];
 
-const FAQS = [
+// NOTE: Placeholder/sample testimonials for layout only.
+// These are NOT real users. Replace with genuine, permission-granted quotes
+// before launching the site publicly.
+const TESTIMONIALS = [
   {
-    q: "What is an ATS score and why does it matter?",
-    a: "Applicant Tracking Systems scan resumes before a human ever sees them. Our ATS score estimates how well your resume parses and matches a role, then gives you specific fixes to rank higher.",
+    quote:
+      "I went from zero callbacks to a few interviews in two weeks after tightening my resume with the ATS fixes.",
+    name: "Aarav S.",
+    role: "Software Engineer",
   },
   {
-    q: "Which file formats can I upload?",
-    a: "PDF, DOCX and plain text. We extract the content automatically and keep every version you analyze.",
+    quote:
+      "The job-match score showed me exactly which keywords I was missing for each role. Huge help when tailoring.",
+    name: "Priya M.",
+    role: "Product Marketing",
   },
   {
-    q: "Is my data private?",
-    a: "Yes. Your resumes are stored securely and never sold or shared. You can delete your data at any time from your account settings.",
-  },
-  {
-    q: "Can I cancel anytime?",
-    a: "Absolutely. Plans are month-to-month with no lock-in, and you can downgrade to the free plan whenever you like.",
-  },
-  {
-    q: "Do I need a credit card to start?",
-    a: "No. The free plan lets you analyze your resume without entering any payment details.",
+    quote:
+      "Cover letters that used to take me an hour now take a minute, and they actually sound like me.",
+    name: "Daniel R.",
+    role: "Data Analyst",
   },
 ];
 
@@ -233,6 +235,42 @@ export function Benefits() {
   );
 }
 
+export function Testimonials() {
+  return (
+    <section className="mx-auto max-w-6xl px-6 py-28">
+      <Reveal className="mx-auto max-w-2xl text-center">
+        <h2 className="text-balance text-4xl font-bold tracking-tight md:text-5xl">
+          Loved by early users
+        </h2>
+        <p className="mt-3 text-xs italic text-muted-foreground">
+          Sample testimonials shown during development. Replace with real, approved quotes before launch.
+        </p>
+      </Reveal>
+      <StaggerGroup className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3">
+        {TESTIMONIALS.map((t) => (
+          <StaggerItem key={t.name} className="flex flex-col rounded-2xl border bg-card p-7">
+            <div className="flex gap-1 text-primary">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <Star key={i} className="h-4 w-4 fill-current" />
+              ))}
+            </div>
+            <p className="mt-5 flex-1 text-sm leading-relaxed">{t.quote}</p>
+            <div className="mt-6 flex items-center gap-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
+                {t.name.charAt(0)}
+              </span>
+              <div>
+                <p className="text-sm font-semibold">{t.name}</p>
+                <p className="text-xs text-muted-foreground">{t.role}</p>
+              </div>
+            </div>
+          </StaggerItem>
+        ))}
+      </StaggerGroup>
+    </section>
+  );
+}
+
 export function Faq() {
   const [open, setOpen] = useState<number | null>(0);
   return (
@@ -296,6 +334,29 @@ export function CallToAction() {
     </section>
   );
 }
+
+const FAQS = [
+  {
+    q: "What is an ATS score and why does it matter?",
+    a: "Applicant Tracking Systems scan resumes before a human ever sees them. Our ATS score estimates how well your resume parses and matches a role, then gives you specific fixes to rank higher.",
+  },
+  {
+    q: "Which file formats can I upload?",
+    a: "PDF, DOCX and plain text. We extract the content automatically and keep every version you analyze.",
+  },
+  {
+    q: "Is my data private?",
+    a: "Yes. Your resumes are stored securely and never sold or shared. You can delete your data at any time from your account settings.",
+  },
+  {
+    q: "Can I cancel anytime?",
+    a: "Absolutely. Plans are month-to-month with no lock-in, and you can downgrade to the free plan whenever you like.",
+  },
+  {
+    q: "Do I need a credit card to start?",
+    a: "No. The free plan lets you analyze your resume without entering any payment details.",
+  },
+];
 
 function Stat({ value, label }: { value: string; label: string }) {
   return (
