@@ -76,7 +76,7 @@ export default async function HistoryPage() {
                       {typeof score === "number" ? (
                         <span className="font-semibold">{score}</span>
                       ) : (
-                        <span className="text-muted-foreground">\u2014</span>
+                        <span className="text-muted-foreground">—</span>
                       )}
                     </td>
                     <td className="px-4 py-3">
