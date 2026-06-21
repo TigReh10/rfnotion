@@ -5,6 +5,9 @@
  * These mirror the JSON contracts used by the matching AI prompts so callers
  * can transparently fall back to them whenever no AI provider is configured.
  * No external services, no API keys, fully unit-testable.
+ *
+ * Result shapes are declared as `type` aliases (not interfaces) so arrays of
+ * them remain assignable to Prisma's `InputJsonValue` when persisted.
  */
 
 const SKILLS = [
@@ -99,16 +102,16 @@ function guessName(resumeText: string): string {
 
 // ---------- LinkedIn optimizer ----------
 
-export interface LinkedInSuggestion {
+export type LinkedInSuggestion = {
   section: string;
   suggestion: string;
-}
+};
 
-export interface LinkedInResult {
+export type LinkedInResult = {
   headline: string;
   about: string;
   suggestions: LinkedInSuggestion[];
-}
+};
 
 export function linkedInLocally(opts: { resumeText: string; targetRole?: string }): LinkedInResult {
   const text = opts.resumeText || "";
@@ -145,18 +148,18 @@ export function linkedInLocally(opts: { resumeText: string; targetRole?: string 
 
 // ---------- Skill-gap analysis ----------
 
-export interface SkillGapItem {
+export type SkillGapItem = {
   skill: string;
   priority: "low" | "medium" | "high";
   reason: string;
   resource: string;
-}
+};
 
-export interface SkillGapResult {
+export type SkillGapResult = {
   presentSkills: string[];
   missingSkills: SkillGapItem[];
   readinessScore: number;
-}
+};
 
 export function skillGapLocally(opts: { resumeText: string; targetRole: string }): SkillGapResult {
   const present = presentSkills(opts.resumeText);
@@ -181,17 +184,17 @@ export function skillGapLocally(opts: { resumeText: string; targetRole: string }
 
 // ---------- Career roadmap ----------
 
-export interface RoadmapStep {
+export type RoadmapStep = {
   title: string;
   timeframe: string;
   focus: string;
   milestones: string[];
-}
+};
 
-export interface CareerRoadmapResult {
+export type CareerRoadmapResult = {
   summary: string;
   steps: RoadmapStep[];
-}
+};
 
 export function careerRoadmapLocally(opts: {
   targetRole: string;

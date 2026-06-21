@@ -57,7 +57,7 @@ export default function LinkedInPage() {
         body: JSON.stringify({ resumeText, targetRole: targetRole || undefined }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error ?? "Something went wrong");
+      if (!res.ok) throw new Error(data?.error?.message ?? data?.error ?? "Something went wrong");
       setResult(data as Result);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");

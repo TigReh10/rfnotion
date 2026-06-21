@@ -42,7 +42,7 @@ export default function SkillsPage() {
         body: JSON.stringify({ resumeText, targetRole }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error ?? "Something went wrong");
+      if (!res.ok) throw new Error(data?.error?.message ?? data?.error ?? "Something went wrong");
       setResult(data.result as SkillGapResult);
       setProvider((data.provider as string | null) ?? null);
     } catch (err) {

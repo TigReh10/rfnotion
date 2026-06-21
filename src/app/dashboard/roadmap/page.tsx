@@ -40,7 +40,7 @@ export default function RoadmapPage() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error ?? "Something went wrong");
+      if (!res.ok) throw new Error(data?.error?.message ?? data?.error ?? "Something went wrong");
       setResult(data.result as CareerRoadmapResult);
       setProvider((data.provider as string | null) ?? null);
     } catch (err) {
