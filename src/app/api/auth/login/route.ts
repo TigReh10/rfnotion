@@ -13,6 +13,8 @@ const bodySchema = z.object({
   email: z.string().email(),
   password: z.string().min(1),
   totp: z.string().length(6).optional(),
+  // Honeypot: real users never fill this hidden field.
+  website: z.string().optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -20,7 +22,23 @@ export async function POST(req: NextRequest) {
     const ip = clientIp(req.headers);
     await rateLimit(`login:${ip}`, { max: 10, windowSeconds: 300 });
 
-    const { email, password, totp } = bodySchema.parse(await req.json());
+    const { email, password, totp, website } = bodySchema.parse(await req.json());
+
+    // Silently reject bots that fill the honeypot, but mimic a normal failure.
+    if (website && website.trim().length > 0) {
+      await prisma.auditLog
+        .create({
+          data: {
+            action: "LOGIN",
+            ip,
+            userAgent: req.headers.get("user-agent"),
+            metadata: { outcome: "blocked", reason: "honeypot_spam" },
+          },
+        })
+        .catch(() => undefined);
+      throw new UnauthorizedError("Invalid credentials");
+    }
+
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user || !user.passwordHash) throw new UnauthorizedError("Invalid credentials");
 
