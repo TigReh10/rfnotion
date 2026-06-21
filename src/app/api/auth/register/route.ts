@@ -17,6 +17,8 @@ const bodySchema = z.object({
     .transform((v) => v.trim().toLowerCase()),
   password: z.string().min(8).max(128),
   name: z.string().min(1).max(120).optional(),
+  // Honeypot: must be empty. Real users never see this field.
+  website: z.string().optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -24,7 +26,15 @@ export async function POST(req: NextRequest) {
     const ip = clientIp(req.headers);
     await rateLimit(`register:${ip}`, { max: 10, windowSeconds: 600 });
 
-    const { email, password, name } = bodySchema.parse(await req.json());
+    const { email, password, name, website } = bodySchema.parse(await req.json());
+
+    // Bot detected: the hidden honeypot field was filled in.
+    if (website && website.trim().length > 0) {
+      await prisma.auditLog
+        .create({ data: { action: "REGISTER_SPAM_BLOCKED", ip, userAgent: req.headers.get("user-agent") } })
+        .catch(() => undefined);
+      throw new AppError("Could not create account", 400, "SPAM_DETECTED");
+    }
 
     if (isDisposableEmail(email)) {
       throw new AppError(
