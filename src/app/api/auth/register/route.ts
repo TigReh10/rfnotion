@@ -31,7 +31,14 @@ export async function POST(req: NextRequest) {
     // Bot detected: the hidden honeypot field was filled in.
     if (website && website.trim().length > 0) {
       await prisma.auditLog
-        .create({ data: { action: "REGISTER_SPAM_BLOCKED", ip, userAgent: req.headers.get("user-agent") } })
+        .create({
+          data: {
+            action: "REGISTER",
+            ip,
+            userAgent: req.headers.get("user-agent"),
+            metadata: { outcome: "blocked", reason: "honeypot_spam" },
+          },
+        })
         .catch(() => undefined);
       throw new AppError("Could not create account", 400, "SPAM_DETECTED");
     }
