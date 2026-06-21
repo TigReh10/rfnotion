@@ -5,6 +5,7 @@ import {
   Showcase,
   Steps,
   Benefits,
+  Testimonials,
   Faq,
   CallToAction,
 } from "@/components/landing/sections";
@@ -23,6 +24,7 @@ export default function HomePage() {
         <Showcase />
         <Steps />
         <Benefits />
+        <Testimonials />
         <Faq />
         <CallToAction />
       </main>
