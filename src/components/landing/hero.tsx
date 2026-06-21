@@ -2,16 +2,21 @@
 
 import Link from "next/link";
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 
 /**
  * Apple-style scrollytelling hero. The section is tall; an inner sticky layer
  * pins to the viewport while the headline mock-up scales up and the intro copy
  * fades + drifts as scroll progresses.
+ *
+ * When the user prefers reduced motion we drop the oversized scroll track and
+ * the scroll-driven transforms entirely, rendering a calm, static hero.
  */
 export function Hero() {
+  const reduceMotion = useReducedMotion();
   const ref = useRef<HTMLElement>(null);
-  // Options passed inline so the offset string literals are contextually typed.
+  // Hooks run unconditionally; their motion values are only applied when motion
+  // is allowed.
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
@@ -24,13 +29,19 @@ export function Hero() {
   const cardRotate = useTransform(scrollYProgress, [0, 0.6], [6, 0]);
   const glowOpacity = useTransform(scrollYProgress, [0, 0.5], [0.5, 0.15]);
 
-  const copyStyle = { opacity: copyOpacity, y: copyY };
-  const cardStyle = { scale: cardScale, y: cardY, rotateX: cardRotate };
-  const glowStyle = { opacity: glowOpacity };
+  const copyStyle = reduceMotion ? undefined : { opacity: copyOpacity, y: copyY };
+  const cardStyle = reduceMotion ? undefined : { scale: cardScale, y: cardY, rotateX: cardRotate };
+  const glowStyle = reduceMotion ? { opacity: 0.3 } : { opacity: glowOpacity };
 
   return (
-    <section ref={ref} className="relative h-[200vh]">
-      <div className="sticky top-0 flex h-screen flex-col items-center justify-start overflow-hidden pt-28">
+    <section ref={ref} className={reduceMotion ? "relative" : "relative h-[200vh]"}>
+      <div
+        className={
+          reduceMotion
+            ? "flex min-h-screen flex-col items-center justify-start overflow-hidden pt-28"
+            : "sticky top-0 flex h-screen flex-col items-center justify-start overflow-hidden pt-28"
+        }
+      >
         <motion.div
           aria-hidden
           style={glowStyle}
