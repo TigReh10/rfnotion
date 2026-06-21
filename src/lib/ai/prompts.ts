@@ -66,3 +66,62 @@ export function interviewPrepPrompt(resumeText: string, jobText?: string): AiMes
     },
   ];
 }
+
+/** LinkedIn profile optimization prompt. */
+export function linkedInPrompt(resumeText: string, targetRole?: string): AiMessage[] {
+  return [
+    {
+      role: "system",
+      content:
+        "You are a LinkedIn branding expert for tech professionals. Using the resume, craft an optimized profile and return ONLY valid JSON: " +
+        "{ headline: string, about: string, suggestions: { section: string, suggestion: string }[] }. " +
+        "The headline must be under 220 characters. The about section must be first-person and under 2000 characters. " +
+        "Avoid clich\u00e9s and never invent facts that are not supported by the resume.",
+    },
+    {
+      role: "user",
+      content: (targetRole ? `Target role: ${targetRole}\n\n` : "") + `Resume:\n${resumeText}`,
+    },
+  ];
+}
+
+/** Skill-gap analysis prompt against a target role. */
+export function skillGapPrompt(resumeText: string, targetRole: string): AiMessage[] {
+  return [
+    {
+      role: "system",
+      content:
+        "You are a pragmatic career coach. Compare the candidate's resume to the skills expected for the target role and return ONLY valid JSON: " +
+        "{ presentSkills: string[], missingSkills: { skill: string, priority: 'low'|'medium'|'high', reason: string, resource: string }[], readinessScore: number }. " +
+        "readinessScore is 0-100. Only list genuinely relevant skills, and never fabricate URLs in 'resource' - describe how to learn the skill instead.",
+    },
+    {
+      role: "user",
+      content: `Target role: ${targetRole}\n\nResume:\n${resumeText}`,
+    },
+  ];
+}
+
+/** Career roadmap prompt toward a target role. */
+export function careerRoadmapPrompt(
+  targetRole: string,
+  currentRole?: string,
+  resumeText?: string,
+): AiMessage[] {
+  return [
+    {
+      role: "system",
+      content:
+        "You are a senior career mentor. Produce a realistic, phased roadmap and return ONLY valid JSON: " +
+        "{ summary: string, steps: { title: string, timeframe: string, focus: string, milestones: string[] }[] }. " +
+        "Use three or four steps with concrete, achievable milestones. Do not invent the candidate's history.",
+    },
+    {
+      role: "user",
+      content:
+        `Target role: ${targetRole}\n` +
+        (currentRole ? `Current role: ${currentRole}\n` : "") +
+        (resumeText ? `\nResume:\n${resumeText}` : ""),
+    },
+  ];
+}
