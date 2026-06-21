@@ -1,6 +1,16 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { FileSearch, Target, PenLine, MessagesSquare, ArrowRight } from "lucide-react";
+import {
+  FileSearch,
+  Target,
+  PenLine,
+  MessagesSquare,
+  Linkedin,
+  GraduationCap,
+  Route,
+  History,
+  ArrowRight,
+} from "lucide-react";
 import { getCurrentUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
@@ -29,6 +39,30 @@ const ACTIONS = [
     desc: "Practice likely questions with strong model answers.",
     href: "/dashboard/interview",
     icon: MessagesSquare,
+  },
+  {
+    title: "LinkedIn optimizer",
+    desc: "Craft a sharp headline, About section, and profile tips from your resume.",
+    href: "/dashboard/linkedin",
+    icon: Linkedin,
+  },
+  {
+    title: "Skill gap",
+    desc: "Measure your readiness for a target role and what to learn next.",
+    href: "/dashboard/skills",
+    icon: GraduationCap,
+  },
+  {
+    title: "Career roadmap",
+    desc: "Get a phased plan with milestones to reach your target role.",
+    href: "/dashboard/roadmap",
+    icon: Route,
+  },
+  {
+    title: "History",
+    desc: "Review every resume you've analyzed and track your scores over time.",
+    href: "/dashboard/history",
+    icon: History,
   },
 ];
 
