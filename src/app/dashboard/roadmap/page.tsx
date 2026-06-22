@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { Route, Loader2 } from "lucide-react";
 
@@ -51,7 +52,10 @@ export default function RoadmapPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl space-y-8">
+    <main className="mx-auto max-w-3xl space-y-8 px-6 py-12">
+      <Link href="/dashboard" className="text-sm text-muted-foreground hover:text-foreground">
+        ← Back to dashboard
+      </Link>
       <header className="space-y-2">
         <div className="flex items-center gap-2">
           <Route className="h-6 w-6 text-primary" />
@@ -146,6 +150,6 @@ export default function RoadmapPage() {
           )}
         </div>
       )}
-    </div>
+    </main>
   );
 }
