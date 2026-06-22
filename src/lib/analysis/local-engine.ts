@@ -8,13 +8,18 @@
  */
 import { tokenize, computeKeywordMatch } from "@/lib/analysis/job-match";
 
-export interface Recommendation {
+// NOTE: these result shapes are declared as `type` aliases (not `interface`)
+// on purpose. Several of them are persisted directly into Prisma `Json`
+// columns, and named interfaces are not assignable to Prisma's InputJsonValue
+// (they lack an implicit index signature), which breaks the build. Type
+// aliases for object literals get an implicit index signature and work.
+export type Recommendation = {
   title: string;
   detail: string;
   severity: "low" | "medium" | "high";
-}
+};
 
-export interface ResumeAnalysisResult {
+export type ResumeAnalysisResult = {
   overallScore: number;
   atsScore: number;
   formattingScore: number;
@@ -29,20 +34,20 @@ export interface ResumeAnalysisResult {
   };
   missingSkills: string[];
   recommendations: Recommendation[];
-}
+};
 
-export interface JobMatchResult {
+export type JobMatchResult = {
   matchScore: number;
   missingKeywords: string[];
   missingSkills: string[];
   suggestedEdits: { section: string; suggestion: string }[];
-}
+};
 
-export interface InterviewPrepResult {
+export type InterviewPrepResult = {
   behavioral: { question: string; answer: string }[];
   technical: { question: string; answer: string }[];
   followUps: string[];
-}
+};
 
 const ACTION_VERBS = [
   "led", "built", "designed", "launched", "improved", "increased", "reduced",
