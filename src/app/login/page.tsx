@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
   const next = params.get("next") || "/dashboard";
@@ -58,6 +58,12 @@ export default function LoginPage() {
           {error && (
             <p className="mt-4 rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
               {error}
+            </p>
+          )}
+
+          {requires2fa && !error && (
+            <p className="mt-4 rounded-md bg-primary/10 px-3 py-2 text-sm text-primary">
+              Enter the 6-digit code from your authenticator app to finish signing in.
             </p>
           )}
 
@@ -125,5 +131,13 @@ export default function LoginPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center px-4 text-sm text-muted-foreground">Loading...</div>}>
+      <LoginForm />
+    </Suspense>
   );
 }
