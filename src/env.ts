@@ -40,6 +40,10 @@ const envSchema = z.object({
 
   OPENAI_API_KEY: z.string().optional(),
   OPENAI_MODEL: z.string().default("gpt-4o"),
+  // Optional override for an OpenAI-compatible endpoint (e.g. Ollama at
+  // http://localhost:11434/v1). When set, the OpenAI provider is enabled even
+  // without an API key, so you can run fully local / keyless models.
+  OPENAI_BASE_URL: z.string().url().optional(),
   ANTHROPIC_API_KEY: z.string().optional(),
   ANTHROPIC_MODEL: z.string().default("claude-3-5-sonnet-20241022"),
   AI_PRIMARY_PROVIDER: z.enum(["openai", "anthropic"]).default("openai"),

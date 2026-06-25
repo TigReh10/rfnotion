@@ -11,7 +11,17 @@ export class OpenAiProvider implements AiProviderClient {
   private client: OpenAI | null;
 
   constructor() {
-    this.client = env.OPENAI_API_KEY ? new OpenAI({ apiKey: env.OPENAI_API_KEY }) : null;
+    // Enable the provider when either a real API key OR a custom base URL is
+    // configured. A base URL (e.g. Ollama at http://localhost:11434/v1) points
+    // the OpenAI-compatible SDK at a local server that ignores the key, so we
+    // fall back to a harmless placeholder when no key is provided.
+    const hasConfig = Boolean(env.OPENAI_API_KEY || env.OPENAI_BASE_URL);
+    this.client = hasConfig
+      ? new OpenAI({
+          apiKey: env.OPENAI_API_KEY ?? "ollama",
+          baseURL: env.OPENAI_BASE_URL,
+        })
+      : null;
   }
 
   isConfigured(): boolean {
