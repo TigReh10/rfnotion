@@ -19,6 +19,9 @@ export async function signAccessToken(claims: Omit<AccessTokenClaims, "iat" | "e
 }
 
 export async function verifyAccessToken(token: string): Promise<AccessTokenClaims> {
-  const { payload } = await jwtVerify(token, secret);
+  // Pin the accepted algorithm. Without this, jwtVerify would accept any
+  // algorithm the key happens to satisfy, opening the door to algorithm
+  // confusion attacks.
+  const { payload } = await jwtVerify(token, secret, { algorithms: ["HS256"] });
   return payload as AccessTokenClaims;
 }
