@@ -69,7 +69,7 @@ const CORE_SKILLS = [
   "docker", "git", "testing", "communication", "leadership",
 ];
 
-const SECTION_HINTS: Record<string, string[]> = {
+const SECTION_HINTS = {
   summary: ["summary", "objective", "profile", "highlights"],
   experience: ["experience", "employment", "work history", "internship"],
   skills: ["skills", "technologies", "technical", "tools", "stack"],
